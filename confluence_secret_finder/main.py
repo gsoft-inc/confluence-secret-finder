@@ -5,6 +5,7 @@ import datetime
 import logging
 from typing import Iterable
 
+import dateutil.parser
 from cache import Cache
 from confluence import ConfluenceRepository
 from model import VersionSecrets, ContentCrawlHistory
@@ -14,7 +15,8 @@ from util import to_json
 
 
 class App(object):
-    def __init__(self, domain, api_user, api_token, blacklist_file, max_attachment_size):
+    def __init__(self, domain, api_user, api_token, blacklist_file, max_attachment_size, start_date: datetime.date):
+        self._start_date = start_date
         self._domain = domain
         self._text_extractor = TextExtractor()
         self._repository = ConfluenceRepository(domain, api_user, api_token, max_attachment_size, self._text_extractor.supported_mime_types)
@@ -74,6 +76,8 @@ class App(object):
             yield s
 
     def _get_start_date(self) -> datetime.date:
+        if self._start_date:
+            return self._start_date
         cached_date = self._cache.get_last_crawl_date()
         if cached_date:
             return cached_date
@@ -85,7 +89,8 @@ def main():
     parser.add_argument('--domain', '-d', action="store", dest='domain', help="Confluence domain.", required=True)
     parser.add_argument('--user', '-u', action="store", dest='user', help="Confluence user.", required=True)
     parser.add_argument('--token', '-t', action="store", dest='token', help="API token for the user.", required=True)
-    parser.add_argument('--max-attachment-size', '-s', action="store", dest='max_attachment_size', default=10, help="Max attachment size to download in MB. Defaults to 10MB.", required=False)
+    parser.add_argument('--start-date', '-s', action="store", dest='start_date', help="Date (YYYY-MM-DD) from which to start the crawling. Otherwise, the script will default to the oldest content creation date or resume where it last stopped.", required=False)
+    parser.add_argument('--max-attachment-size', '-m', action="store", dest='max_attachment_size', default=10, help="Max attachment size to download in MB. Defaults to 10MB.", required=False)
     parser.add_argument('--blacklist', '-b', action='store', dest='blacklist_file', default=None, help='File containing regexes to blacklist secrets.')
     parser.add_argument('-v', action="store_true", dest='verbose', default=False, help="Increases output verbosity.")
     parser.add_argument('-vv', action="store_true", dest='verbose_debug', default=False, help="Increases output verbosity even more.")
@@ -93,12 +98,16 @@ def main():
 
     args = parser.parse_args()
 
+    start_date = None
+    if args.start_date:
+        start_date = dateutil.parser.parse(args.start_date).date()
+
     if args.verbose or args.verbose_debug:
         logging.getLogger("sqlitedict").setLevel(logging.ERROR)
         logging.getLogger("chardet.charsetprober").setLevel(logging.ERROR)
         logging.getLogger().setLevel(logging.DEBUG if args.verbose_debug else logging.INFO)
 
-    with App(args.domain, args.user, args.token, args.blacklist_file, args.max_attachment_size) as app:
+    with App(args.domain, args.user, args.token, args.blacklist_file, args.max_attachment_size, start_date) as app:
         for s in app.find_secrets():
             if args.json:
                 j = to_json(s)
