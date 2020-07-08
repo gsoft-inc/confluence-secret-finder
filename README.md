@@ -3,9 +3,14 @@
 Script to search Confluence Cloud for secrets.
 
 ## Setup
-Textract depencencies:
+Textract depencencies (Ubuntu/Debian/Kali):
 ```
-apt-get install python-dev libxml2-dev libxslt1-dev antiword unrtf poppler-utils pstotext swig
+apt-get install python-dev libxml2-dev libxslt1-dev antiword unrtf poppler-utils swig
+```
+
+Textract depencencies (OSX):
+```
+See https://textract.readthedocs.io/en/stable/installation.html#osx
 ```
 
 Other python dependencies:
