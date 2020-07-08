@@ -1,0 +1,7 @@
+unidiff
+requests
+detect_secrets
+sqlitedict
+beautifulsoup4
+python-dateutil
+textract
