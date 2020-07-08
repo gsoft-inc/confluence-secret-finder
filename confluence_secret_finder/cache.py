@@ -6,13 +6,13 @@ from model import ContentCrawlHistory
 
 
 class Cache(object):
-    _crawl_history_table = "crawl_history"
-    _info_table = "info"
-    _last_crawl_date_key = "last_crawl_date"
-
-    def __init__(self, file_name):
+    def __init__(self, file_name, domain):
         self.file_name = file_name
         self.tables = {}
+
+        self._crawl_history_table = f"{domain}_crawl_history"
+        self._info_table = f"{domain}_info"
+        self._last_crawl_date_key = f"{domain}_last_crawl_date"
 
     def close(self):
         for t in self.tables.values():

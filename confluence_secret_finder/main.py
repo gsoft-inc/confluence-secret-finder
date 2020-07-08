@@ -23,7 +23,7 @@ class App(object):
         self._secret_finder = SecretFinder(blacklist_file)
 
     def __enter__(self):
-        self._cache = Cache("cache.sqlite")
+        self._cache = Cache("cache.sqlite", self._domain)
         return self
 
     def __exit__(self, *args):
