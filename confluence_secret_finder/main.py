@@ -3,6 +3,7 @@
 import argparse
 import datetime
 import logging
+import os
 from typing import Iterable
 
 import dateutil.parser
@@ -15,7 +16,8 @@ from util import to_json
 
 
 class App(object):
-    def __init__(self, domain, api_user, api_token, blacklist_file, max_attachment_size, start_date: datetime.date):
+    def __init__(self, domain, api_user, api_token, blacklist_file, max_attachment_size, cache_location, start_date: datetime.date):
+        self._cache_location = cache_location
         self._start_date = start_date
         self._domain = domain
         self._text_extractor = TextExtractor()
@@ -23,7 +25,12 @@ class App(object):
         self._secret_finder = SecretFinder(blacklist_file)
 
     def __enter__(self):
-        self._cache = Cache("cache.sqlite", self._domain)
+        if self._cache_location:
+            cache_path = self._cache_location
+        else:
+            current_folder = os.path.dirname(os.path.realpath(__file__))
+            cache_path = os.path.join(current_folder, "cache.sqlite")
+        self._cache = Cache(cache_path, self._domain)
         return self
 
     def __exit__(self, *args):
@@ -92,6 +99,7 @@ def main():
     parser.add_argument('--start-date', '-s', action="store", dest='start_date', help="Date (YYYY-MM-DD) from which to start the crawling. Otherwise, the script will default to the oldest content creation date or resume where it last stopped.", required=False)
     parser.add_argument('--max-attachment-size', '-m', action="store", dest='max_attachment_size', default=10, help="Max attachment size to download in MB. Defaults to 10MB.", required=False)
     parser.add_argument('--blacklist', '-b', action='store', dest='blacklist_file', default=None, help='File containing regexes to blacklist secrets.')
+    parser.add_argument('--cache-location', '-c', action='store', dest='cache_location', default=None, help='Specified where the cache sqlite file will be saved.')
     parser.add_argument('-v', action="store_true", dest='verbose', default=False, help="Increases output verbosity.")
     parser.add_argument('-vv', action="store_true", dest='verbose_debug', default=False, help="Increases output verbosity even more.")
     parser.add_argument('--json', '-j', action="store_true", dest='json', default=False, help="Outputs the results as json.")
@@ -107,7 +115,7 @@ def main():
         logging.getLogger("chardet.charsetprober").setLevel(logging.ERROR)
         logging.getLogger().setLevel(logging.DEBUG if args.verbose_debug else logging.INFO)
 
-    with App(args.domain, args.user, args.token, args.blacklist_file, args.max_attachment_size, start_date) as app:
+    with App(args.domain, args.user, args.token, args.blacklist_file, args.max_attachment_size, args.cache_location, start_date) as app:
         for s in app.find_secrets():
             if args.json:
                 j = to_json(s)

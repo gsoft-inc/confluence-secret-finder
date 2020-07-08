@@ -20,7 +20,8 @@ pip3 install -r requirements.txt
 
 ## Usage
 ```
-usage: main.py [-h] --domain DOMAIN --user USER --token TOKEN [--start-date START_DATE] [--max-attachment-size MAX_ATTACHMENT_SIZE] [--blacklist BLACKLIST_FILE] [-v] [-vv] [--json]
+usage: main.py [-h] --domain DOMAIN --user USER --token TOKEN [--start-date START_DATE] [--max-attachment-size MAX_ATTACHMENT_SIZE] [--blacklist BLACKLIST_FILE] [--cache-location CACHE_LOCATION] [-v] [-vv]
+               [--json]
 
 Confluence Secret Finder
 
@@ -37,6 +38,8 @@ optional arguments:
                         Max attachment size to download in MB. Defaults to 10MB.
   --blacklist BLACKLIST_FILE, -b BLACKLIST_FILE
                         File containing regexes to blacklist secrets.
+  --cache-location CACHE_LOCATION, -c CACHE_LOCATION
+                        Specified where the cache sqlite file will be saved.
   -v                    Increases output verbosity.
   -vv                   Increases output verbosity even more.
   --json, -j            Outputs the results as json.
