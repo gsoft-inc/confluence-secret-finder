@@ -8,7 +8,8 @@ class PasswordPatternPlugin(BasePlugin):
                  "RFC[0-9]{3}", "ES201[56]", "Office365", "System32", "log4net",
                  "VS20[0-9]{2}", "word2vec", "Graphics2D", r"[CS]A\d{4}", "Base64",
                  "AES256CBC", "ISO27001", r"\d+GB", r"\d+IOPS", "python3",
-                 r"\d{2,4}(x\d{2,4})px", r"\d{2,4}x\d{2,4}", r"\d{1,2}(secs?|mins?|hours?|days?|weeks?|months?)", r"\d{1,2}min\d{1,2}s?",
+                 r"\d{2,4}(x\d{2,4})px", r"\d{3,4}px", r"\d{2,4}x\d{2,4}",
+                 r"\d{1,2}(secs?|mins?|hours?|days?|weeks?|months?)", r"\d{1,2}min\d{1,2}s?",
                  r"ConsoleApp\d", r"\d{1,4}(k|m)bps", r"\d{1,4}ms", "KB\d+"]
 
     def __init__(self):
