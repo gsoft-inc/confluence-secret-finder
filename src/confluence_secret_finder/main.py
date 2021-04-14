@@ -7,12 +7,12 @@ import os
 from typing import Iterable
 
 import dateutil.parser
-from cache import Cache
-from confluence import ConfluenceRepository
-from model import VersionSecrets, ContentCrawlHistory
-from secrets import SecretFinder
-from text_extractor import TextExtractor
-from util import to_json
+from core.cache import Cache
+from core.confluence import ConfluenceRepository
+from core.model import VersionSecrets, ContentCrawlHistory
+from core.secrets import SecretFinder
+from core.text_extractor import TextExtractor
+from core.util import to_json
 
 
 class App(object):
@@ -29,7 +29,7 @@ class App(object):
             cache_path = self._cache_location
         else:
             current_folder = os.path.dirname(os.path.realpath(__file__))
-            cache_path = os.path.join(current_folder, "cache.sqlite")
+            cache_path = os.path.join(current_folder, "../../cache.sqlite")
         self._cache = Cache(cache_path, self._domain)
         return self
 

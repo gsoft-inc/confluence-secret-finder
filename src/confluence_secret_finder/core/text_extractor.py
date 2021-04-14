@@ -7,8 +7,8 @@ import textract
 from bs4 import BeautifulSoup
 from textract.exceptions import ExtensionNotSupported
 
-from model import ContentInfo, VersionInfo
-from util import get_mime_types_from_extensions, get_extensions_from_mime_type
+from .model import ContentInfo, VersionInfo
+from .util import get_mime_types_from_extensions, get_extensions_from_mime_type
 
 
 class TextExtractor:

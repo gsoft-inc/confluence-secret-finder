@@ -2,7 +2,8 @@ import datetime
 
 from sqlitedict import SqliteDict
 
-from model import ContentCrawlHistory
+from .model import ContentCrawlHistory
+from .util.legacy_unpickler import legacy_decode
 
 
 class Cache(object):
@@ -42,5 +43,5 @@ class Cache(object):
 
     def _get_dict(self, table):
         if table not in self.tables:
-            self.tables[table] = SqliteDict(self.file_name, tablename=table, autocommit=True)
+            self.tables[table] = SqliteDict(self.file_name, tablename=table, autocommit=True, decode=legacy_decode)
         return self.tables[table]

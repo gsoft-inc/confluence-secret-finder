@@ -1,8 +1,8 @@
+import re
 from typing import List
 
-from secrets.plugins.base_plugin import BasePlugin
-import re
-from secrets.plugins.blacklist import Blacklist
+from .base_plugin import BasePlugin
+from ..blacklist import Blacklist
 
 
 class PasswordPatternPlugin(BasePlugin):

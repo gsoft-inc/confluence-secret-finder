@@ -1,2 +1,0 @@
-from secrets.plugins.password_pattern_plugin import PasswordPatternPlugin
-from secrets.plugins.yelp_detect_secrets_plugin import YelpDetectSecretsPlugin

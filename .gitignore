@@ -195,4 +195,4 @@ dmypy.json
 .pyre/
 
 blacklist.txt
-/confluence_secret_finder/cache.sqlite
+/cache.sqlite

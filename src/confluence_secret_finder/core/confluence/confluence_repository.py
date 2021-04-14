@@ -5,9 +5,9 @@ from typing import Iterable
 
 import dateutil.parser
 
-from confluence.confluence_client import ConfluenceClient
-from model import ContentInfo, VersionInfo, SpaceInfo
-from util import get_mime_type_from_file_name
+from .confluence_client import ConfluenceClient
+from ..model import ContentInfo, VersionInfo, SpaceInfo
+from ..util import get_mime_type_from_file_name
 
 
 class ConfluenceRepository:

@@ -1,10 +1,11 @@
+import re
 from typing import List
 
-from detect_secrets.core.plugins.util import get_mapping_from_secret_type_to_class
-from secrets.plugins.base_plugin import BasePlugin
 from detect_secrets import SecretsCollection
+from detect_secrets.core.plugins.util import get_mapping_from_secret_type_to_class
 from detect_secrets.settings import transient_settings
-import re
+
+from .base_plugin import BasePlugin
 
 
 class YelpDetectSecretsPlugin(BasePlugin):

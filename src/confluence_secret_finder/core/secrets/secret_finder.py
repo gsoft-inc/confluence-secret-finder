@@ -1,5 +1,6 @@
-from secrets.plugins import *
-from secrets.plugins.blacklist import Blacklist
+from .blacklist import Blacklist
+from .plugins.password_pattern_plugin import PasswordPatternPlugin
+from .plugins.yelp_detect_secrets_plugin import YelpDetectSecretsPlugin
 
 
 class SecretFinder(object):
