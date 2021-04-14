@@ -11,10 +11,10 @@ class SecretFinder(object):
 
     def find_secrets(self, content: str):
         secrets = set()
-        for line_number, line in enumerate(l.strip() for l in content.splitlines()):
-            for p in self._plugins:
-                for s in p.find_secrets(line):
-                    if len(s) >= 6 and s not in secrets and not self.blacklist.matches(s):
-                        secrets.add(s)
-                        yield s
+        lines = [l.strip() for l in content.splitlines()]
+        for p in self._plugins:
+            for s in p.find_secrets(lines):
+                if len(s) >= 6 and s not in secrets and not self.blacklist.matches(s):
+                    secrets.add(s)
+                    yield s
 

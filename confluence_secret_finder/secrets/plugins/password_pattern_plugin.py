@@ -1,3 +1,5 @@
+from typing import List
+
 from secrets.plugins.base_plugin import BasePlugin
 import re
 from secrets.plugins.blacklist import Blacklist
@@ -16,7 +18,8 @@ class PasswordPatternPlugin(BasePlugin):
         self.password_regex = re.compile(r"(?:^|\s)(\w*(?:\d+[a-zA-Z]|[a-zA-Z]+\d)\w*!?)(?:$|\s)")
         self.blacklist = Blacklist(self.BLACKLIST)
 
-    def find_secrets(self, line: str):
-        for m in self.password_regex.findall(line):
-            if not self.blacklist.matches(m):
-                yield m
+    def find_secrets(self, lines: List[str]):
+        for line in lines:
+            for m in self.password_regex.findall(line):
+                if not self.blacklist.matches(m):
+                    yield m

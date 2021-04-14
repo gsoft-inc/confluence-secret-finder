@@ -1,6 +1,9 @@
+from typing import List
+
+from detect_secrets.core.plugins.util import get_mapping_from_secret_type_to_class
 from secrets.plugins.base_plugin import BasePlugin
-from detect_secrets.core.usage import PluginOptions
-from detect_secrets.plugins.common import initialize
+from detect_secrets import SecretsCollection
+from detect_secrets.settings import transient_settings
 import re
 
 
@@ -9,23 +12,24 @@ class YelpDetectSecretsPlugin(BasePlugin):
 
     def __init__(self):
         self.password_replacement_regex = re.compile("|".join(self.PASSWORD_REPLACEMENTS), flags=re.I)
-        active_plugins = {}
-        for plugin in PluginOptions.all_plugins:
-            related_args = {}
-            for related_arg_tuple in plugin.related_args:
-                flag_name, default_value = related_arg_tuple
-                related_args[flag_name[2:].replace("-", "_")] = default_value
 
-            active_plugins[plugin.classname] = related_args
+    def find_secrets(self, lines: List[str]):
+        secrets_collection = SecretsCollection()
+        with transient_settings({'plugins_used': [{'name': plugin_type.__name__} for plugin_type in
+                                                  get_mapping_from_secret_type_to_class().values()]}) as settings:
+            settings.disable_filters(
+                'detect_secrets.filters.common.is_invalid_file',
+            )
 
-        self._plugins = initialize.from_parser_builder(active_plugins, exclude_lines_regex=None, automaton=False, should_verify_secrets=True)
+            # Use scan_diff since scan_line seems broken.
+            line_diff = "\n".join("+" + l for l in lines)
+            line_diff = self.password_replacement_regex.sub("password", line_diff)
+            dummy_diff = f"--- dummy\n+++ dummy\n@@ -0,0 +1,{len(lines)} @@\n{line_diff}"
+            secrets_collection.scan_diff(dummy_diff)
 
-    def find_secrets(self, line: str):
-        for p in self._plugins:
-            line = self.password_replacement_regex.sub("password", line)
-
-            for k in p.analyze_line(line, 0, "potato"):
-                # detect_secrets sometimes return a lowercase version of the secret. Find the real string.
-                secret_index = line.lower().find(k.secret_value.lower())
-                secret_value = line[secret_index:secret_index + len(k.secret_value)]
-                yield secret_value
+        for _, secret in secrets_collection:
+            # detect_secrets sometimes return a lowercase version of the secret. Find the real string.
+            line = lines[secret.line_number - 1]
+            secret_index = line.lower().find(secret.secret_value.lower())
+            secret_value = line[secret_index:secret_index + len(secret.secret_value)]
+            yield secret_value
