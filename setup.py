@@ -15,7 +15,7 @@ setup(
         'requests',
         'detect_secrets',
         'sqlitedict',
-        'beautifulsoup4',
+        'beautifulsoup4==4.8.0',
         'python-dateutil',
         'textract'
     ],
