@@ -31,7 +31,8 @@ class ConfluenceClient(object):
             for result in r["results"]:
                 yield result
             if "next" in r["_links"]:
-                params["start"] += params["limit"]
+                url = r["_links"]["base"] + r["_links"]["next"]
+                params = None
             else:
                 break
 
