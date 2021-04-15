@@ -13,14 +13,14 @@ Textract depencencies (OSX):
 See https://textract.readthedocs.io/en/stable/installation.html#osx
 ```
 
-Other python dependencies:
+Tool
 ```
-pip3 install -r requirements.txt
+python setup.py install
 ```
 
 ## Usage
 ```
-usage: main.py [-h] --domain DOMAIN --user USER --token TOKEN [--start-date START_DATE] [--max-attachment-size MAX_ATTACHMENT_SIZE] [--blacklist BLACKLIST_FILE] [--cache-location CACHE_LOCATION] [-v] [-vv]
+usage: confluence-secret-finder [-h] --domain DOMAIN --user USER --token TOKEN [--start-date START_DATE] [--max-attachment-size MAX_ATTACHMENT_SIZE] [--blacklist BLACKLIST_FILE] [--cache-location CACHE_LOCATION] [-v] [-vv]
                [--json]
 
 Confluence Secret Finder
