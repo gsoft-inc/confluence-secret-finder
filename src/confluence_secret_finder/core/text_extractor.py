@@ -31,9 +31,11 @@ class TextExtractor:
 
         if extensions:
             errors = []
-            with tempfile.NamedTemporaryFile() as f:
+            f = tempfile.NamedTemporaryFile(delete=False)
+            try:
                 f.write(content)
-                f.flush()
+                f.close()
+
                 for extension in extensions:
                     try:
                         return textract.process(f.name, extension=extension).decode("utf-8")
@@ -41,6 +43,9 @@ class TextExtractor:
                         pass
                     except Exception as e:
                         errors.append(e)
+            finally:
+                f.close()
+                os.unlink(f.name)
             if any(errors):
                 logging.error(errors[0])
         else:

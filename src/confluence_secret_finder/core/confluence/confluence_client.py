@@ -59,10 +59,10 @@ class ConfluenceClient(object):
 
             if status_code == 429:
                 sleep_time = 5
-                logging.warning("Rate limit reached. Sleeping %d seconds." % sleep_time)
+                logging.warning(f"Rate limit reached. Sleeping {sleep_time} seconds." )
             else:
                 sleep_time = retry * 5
-                logging.error("Unhandled error. Retrying in %d seconds." % sleep_time)
+                logging.error(f"Unhandled error. Retrying in {sleep_time} seconds. Status code {status_code}, Message: {response.text}.")
 
             retry += 1
             if sleep_time > 0:
